@@ -38,15 +38,25 @@ router.post('/book', (req, res) => {
 })
 
 router.put('/purchase', (req, res) => {
-updatemany()
+Cart.updateMany({isPaid: false},{isPaid: true})
+.then(() => {
+  res.json({result: true, message: 'Les éléments du panier ont été payé.' })
+})
 })
 
 router.delete('/cancel', (req, res) => {
-
+Cart.deleteOne({_id: req.body.id}).then(() => {
+  res.json({result: true, message: 'Ce trajet a été supprimé du panier.'})
+})
 })
 
-// populate.('trips') ici
-router.get('/display', (res, req) => {
-
+router.get('/display', (req, res) => {
+Cart.find()
+.populate('trip')
+.then(data => {
+  const dataIsPaidTrue = data.filter(doc => doc.isPaid === true);
+  const dataIsPaidFalse = data.filter(doc => doc.isPaid === false);
+    res.json({result: true, dataTrue: dataIsPaidTrue, dataFalse: dataIsPaidFalse })
+})
 })
 module.exports = router;
