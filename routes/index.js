@@ -11,11 +11,11 @@ router.get('/', function(req, res, next) {
 });
 
 //ajouter req.body.date
-router.get('/trips', (req, res) => {
+router.get('/trips/:departure/:arrival/:date', (req, res) => {
   Trip.find({ 
-    departure: {$regex: new RegExp(req.body.departure, 'i')}, 
-    arrival: {$regex: new RegExp(req.body.arrival, 'i')},
-    date: {$gte: moment(req.body.date).startOf('day'),$lte: moment(req.body.date).endOf('day')}
+    departure: {$regex: new RegExp(req.params.departure, 'i')}, 
+    arrival: {$regex: new RegExp(req.params.arrival, 'i')},
+    date: {$gte: moment(req.params.date, "DD-MM-YYYY").startOf('day'),$lte: moment(req.params.date, "DD-MM-YYYY").endOf('day')}
   })
   .then(data => {
     if(data[0]) {
