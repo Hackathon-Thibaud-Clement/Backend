@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const moment = require('moment');
 require('../models/connection');
 const Trip = require('../models/trips');
 const Cart = require('../models/cart');
@@ -13,7 +14,8 @@ router.get('/', function(req, res, next) {
 router.get('/trips', (req, res) => {
   Trip.find({ 
     departure: {$regex: new RegExp(req.body.departure, 'i')}, 
-    arrival: {$regex: new RegExp(req.body.arrival, 'i')}
+    arrival: {$regex: new RegExp(req.body.arrival, 'i')},
+    date: {$gte: moment(req.body.date).startOf('day'),$lte: moment(req.body.date).endOf('day')}
   })
   .then(data => {
     if(data[0]) {
